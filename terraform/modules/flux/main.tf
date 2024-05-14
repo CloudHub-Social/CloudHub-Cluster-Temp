@@ -15,24 +15,11 @@ terraform {
     flux = {
       source = "fluxcd/flux"
     }
-    doppler = {
-      source = "DopplerHQ/doppler"
-    }
   }
 }
 
 module "common" {
   source = "../common"
-}
-
-data "doppler_secrets" "env" {
-  provider = doppler
-}
-
-locals {
-  doppler-env = {
-    map = data.doppler_secrets.env.map
-  }
 }
 
 # Kubernetes Namespace
@@ -59,7 +46,7 @@ resource "flux_bootstrap_git" "this" {
   depends_on = [github_repository_deploy_key.this]
 
   # path = var.flux_bootstrap_path
-  path = local.doppler-env.map.FLUX_BOOTSTRAP_PATH
+  path = var.doppler-env.map.FLUX_BOOTSTRAP_PATH
 }
 
 resource "kubernetes_secret" "sops-age" {
@@ -70,6 +57,6 @@ resource "kubernetes_secret" "sops-age" {
   type = "generic"
   data = {
     # "age.agekey" = var.sops_age_agekey
-    "age.agekey" = local.doppler-env.map.SOPS_AGE_AGEKEY
+    "age.agekey" = var.doppler-env.map.SOPS_AGE_AGEKEY
   }
 }

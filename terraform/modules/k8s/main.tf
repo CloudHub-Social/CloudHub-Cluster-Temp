@@ -135,7 +135,6 @@ output "kubeconfig" {
     talos_machine_secrets.machine_secrets,
     talos_machine_bootstrap.bootstrap,
     data.talos_cluster_kubeconfig.kubeconfig,
-    data.talos_cluster_health.health
   ]
   value = data.talos_cluster_kubeconfig.kubeconfig.kubeconfig_raw
 }
@@ -149,7 +148,7 @@ output "talosconfig" {
 
 resource "doppler_secret" "kubeconfig" {
   project = "cloudhub"
-  config  = terraform.workspace
+  config  = "${terraform.workspace}"
   name    = "KUBECONFIG"
   value   = data.talos_cluster_kubeconfig.kubeconfig.kubeconfig_raw
   depends_on = [
@@ -162,7 +161,7 @@ resource "doppler_secret" "kubeconfig" {
 
 resource "doppler_secret" "talosconfig" {
   project = "cloudhub"
-  config  = terraform.workspace
+  config  = "${terraform.workspace}"
   name    = "TALOSCONFIG"
   value   = data.talos_client_configuration.talosconfig.talos_config
   depends_on = [

@@ -14,3 +14,5 @@ variable "repository_name" {
 }
 
 variable "tls_private_key" {}
+
+variable "doppler-env" {}
