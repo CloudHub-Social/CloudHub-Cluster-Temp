@@ -34,14 +34,14 @@ resource "proxmox_vm_qemu" "talos-control-plane" {
   tags = lower(terraform.workspace)
 
   onboot = true
-  
+
   disks {
     scsi {
       scsi0 {
         disk {
           size       = module.common.workspace["disk_0_size"]
           storage    = "local-lvm"
-          discard    = "on"
+          discard    = true
           emulatessd = true
         }
       }
@@ -49,7 +49,7 @@ resource "proxmox_vm_qemu" "talos-control-plane" {
         disk {
           size       = module.common.workspace["disk_1_size"]
           storage    = "local-lvm"
-          discard    = "on"
+          discard    = true
           emulatessd = true
         }
       }
@@ -105,7 +105,7 @@ resource "proxmox_vm_qemu" "talos-worker" {
         disk {
           size       = module.common.workspace["disk_0_size"]
           storage    = "local-lvm"
-          discard    = "on"
+          discard    = true
           emulatessd = true
         }
       }
@@ -113,7 +113,7 @@ resource "proxmox_vm_qemu" "talos-worker" {
         disk {
           size       = module.common.workspace["disk_1_size"]
           storage    = "local-lvm"
-          discard    = "on"
+          discard    = true
           emulatessd = true
         }
       }
