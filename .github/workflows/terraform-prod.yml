@@ -1,8 +1,7 @@
 name: "Terraform Production"
 
 on:
-  release:
-    - released
+  release: [released]
 
 env:
   name: prod
