@@ -92,11 +92,11 @@ module "flux" {
     kubectl    = kubectl,
     github     = github,
     flux       = flux
-    doppler    = doppler.env
   }
   flux_bootstrap_path = var.flux_bootstrap_path
   sops_age_agekey     = var.sops_age_agekey
   tls_private_key     = tls_private_key.flux
+  doppler-env         = data.doppler_secrets.env
 }
 
 module "cloudflare" {
