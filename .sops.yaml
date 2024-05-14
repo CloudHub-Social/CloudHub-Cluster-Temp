@@ -1,0 +1,25 @@
+---
+creation_rules:
+  # Development
+  - path_regex: .*/development/.*values.yaml$
+    age: age1472mvfqk0pryyv9w7q0qyv83twgtptu5tnhca9u0w9fqkvte4c9sktl244
+
+  - path_regex: .*/development/.*
+    encrypted_regex: "^(data|stringData)$"
+    age: age1472mvfqk0pryyv9w7q0qyv83twgtptu5tnhca9u0w9fqkvte4c9sktl244
+
+  # Staging
+  - path_regex: .*/staging/.*values.yaml$
+    age: age17qhmpgu0df73ufmva0caqdsvvn3al5ud6f8swzrn7md5j5l8jawqfcutgq
+
+  - path_regex: .*/staging/.*
+    encrypted_regex: ^(data|stringData)$
+    age: age17qhmpgu0df73ufmva0caqdsvvn3al5ud6f8swzrn7md5j5l8jawqfcutgq
+
+  # Production
+  - path_regex: .*/production/.*values.yaml$
+    age: age1flqef8m4ya7z0fh8d33c7z4clqkrr8783e7q4ta9cc206pvtdq7sp962k7
+
+  - path_regex: .*/production/.*
+    encrypted_regex: ^(data|stringData)$
+    age: age1flqef8m4ya7z0fh8d33c7z4clqkrr8783e7q4ta9cc206pvtdq7sp962k7
