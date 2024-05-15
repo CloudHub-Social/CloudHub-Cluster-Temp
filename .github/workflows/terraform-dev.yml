@@ -91,7 +91,6 @@ jobs:
         with:
           terraform-path: "${{ env.TF_WORKING_DIR }}"
           target-type: commit
-        continue-on-error: true
 
       - name: truncate terraform apply result
         run: |
