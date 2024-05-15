@@ -78,7 +78,7 @@ jobs:
         # uses: Pluralith/actions/run@v1.4.0
         uses: Just-Insane/pluralith-actions/run@e5d17b2206d59f65419079e2c51db6b9096ddcfd
         with:
-          terraform-command: "apply"
+          terraform-command: "apply -no-color -input=false -auto-approve"
           terraform-path: "${{ env.TF_WORKING_DIR }}"
           title: "${{ env.name }}"
           show-changes: true
