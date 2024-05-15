@@ -2,10 +2,9 @@ name: "Terraform Development"
 
 on:
   push:
-    branches-ignore:
-      - "main"
     paths:
       - "terraform/**"
+  workflow_dispatch:
 
 env:
   name: dev
@@ -92,6 +91,7 @@ jobs:
         with:
           terraform-path: "${{ env.TF_WORKING_DIR }}"
           target-type: commit
+        continue-on-error: true
 
       - name: truncate terraform apply result
         run: |
