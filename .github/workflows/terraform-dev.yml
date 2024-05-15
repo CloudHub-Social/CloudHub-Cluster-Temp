@@ -15,7 +15,7 @@ env:
   
 permissions:
   contents: write
-  pull_requests: write
+  pull-requests: write
 
 defaults:
   run:
