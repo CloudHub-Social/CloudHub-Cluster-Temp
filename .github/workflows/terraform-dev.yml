@@ -1,21 +1,25 @@
-
 name: "Terraform Development"
 
 on:
   push:
     branches-ignore:
-      - 'main'
+      - "main"
+    paths:
+      - "terraform/**"
 
 env:
   name: dev
   TF_CLOUD_ORGANIZATION: "${{ vars.TF_CLOUD_ORGANIZATION }}"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
-  
+  TF_WORKING_DIR: "./terraform"
+  PLURALITH_ORG_ID: "${{ vars.PLURALITH_ORG_ID }}"
+  PLURALITH_PROJECT_ID: "${{ vars.PLURALITH_PROJECT_ID }}"
+
 permissions:
   contents: write
-  pull_requests: write
- 
+  pull-requests: write
+
 defaults:
   run:
     working-directory: ./terraform
@@ -28,8 +32,8 @@ jobs:
     defaults:
       run:
         working-directory: ./terraform
-        shell: bash  
-      
+        shell: bash
+
     environment: dev
     steps:
       - name: Checkout
@@ -40,6 +44,7 @@ jobs:
         uses: hashicorp/setup-terraform@v3
         with:
           cli_config_credentials_token: ${{ secrets.TF_API_TOKEN }}
+          terraform_wrapper: false
 
       - name: Terraform fmt
         id: fmt
@@ -54,10 +59,39 @@ jobs:
         id: validate
         run: terraform validate -no-color
 
-      - name: Terraform Apply
+      # - name: Terraform Apply
+      #   id: apply
+      #   run: terraform apply -no-color -input=false -auto-approve
+      #   continue-on-error: true
+
+      # Set up and authenticate Pluralith
+      - name: Pluralith Init
+        # uses: Pluralith/actions/init@v1.4.0
+        uses: Just-Insane/pluralith-actions/init@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        with:
+          terraform-path: "${{ env.TF_WORKING_DIR }}"
+          api-key: "${{ secrets.PLURALITH_API_KEY }}"
+          org-id: "${{ vars.PLURALITH_ORG_ID }}"
+          project-id: "${{ vars.PLURALITH_PROJECT_ID }}"
+
+      - name: Pluralith Run Apply
         id: apply
-        run: terraform apply -no-color -input=false -auto-approve
-        continue-on-error: true
+        # uses: Pluralith/actions/run@v1.4.0
+        uses: Just-Insane/pluralith-actions/run@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        with:
+          terraform-command: "apply"
+          terraform-path: "${{ env.TF_WORKING_DIR }}"
+          title: "${{ env.name }}"
+          show-changes: true
+          show-drift: true
+          show-costs: false
+
+      - name: Pluralith Comment
+        id: comment
+        uses: Just-Insane/pluralith-actions/comment@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        with:
+          terraform-path: "${{ env.TF_WORKING_DIR }}"
+          target-type: commit
 
       - name: truncate terraform apply result
         run: |
@@ -66,14 +100,14 @@ jobs:
           EOF
           )
           echo "APPLY<<EOF" >> $GITHUB_ENV
-          echo "${apply:0:65536}" | grep >> $GITHUB_ENV
+          echo "${apply:0:65536}" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
       - name: Create commit comment
         uses: peter-evans/commit-comment@v3
         id: cc
-        env:
-          APPLY: "terraform\n${{ steps.apply.outputs.stdout }}"
+        # env:
+        #   APPLY: "terraform\n${{ steps.apply.outputs.stdout }}"
         with:
           body: |
             #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
@@ -81,9 +115,9 @@ jobs:
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             <details><summary>Validation Output</summary>
 
-            \`\`\`\n
+            ```\n
             ${{ steps.validate.outputs.stdout }}
-            \`\`\`
+            ```
 
             </details>
 
@@ -91,13 +125,21 @@ jobs:
 
             <details><summary>Show Apply</summary>
 
-            \`\`\`\n
-            $APPLY
-            \`\`\`
+            ```\n
+            ${{ env.APPLY }}
+            ```
 
             </details>
 
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            #### Pluralith Graph
+
+            <details><summary>Show Graph</summary>
+
+            ${{ steps.comment.outputs.body }}
+
+            </details>
+
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.TF_WORKING_DIR }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
       - name: Check outputs
         run: |

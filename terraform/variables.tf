@@ -1,3 +1,5 @@
+# These are placeholders for variables passed in from Doppler and Variable Sets in TF Cloud.
+
 variable "gh_token" {}
 
 variable "gh_owner" {}

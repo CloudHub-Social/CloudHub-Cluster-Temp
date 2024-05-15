@@ -2,8 +2,8 @@ name: "Terraform Staging"
 
 on:
   pull_request:
-    types:
-      - opened
+    # types:
+    #   - opened
     branches:
       - "main"
   workflow_dispatch:
@@ -13,15 +13,16 @@ env:
   TF_CLOUD_ORGANIZATION: "${{ vars.TF_CLOUD_ORGANIZATION }}"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
-  
+  TF_WORKING_DIR: "./terraform"
+
 permissions:
   contents: write
-  pull_requests: write 
+  pull-requests: write
 
 defaults:
   run:
     working-directory: ./terraform
-    shell: bash 
+    shell: bash
 
 jobs:
   terraform-plan:
@@ -55,10 +56,39 @@ jobs:
         id: validate
         run: terraform validate -no-color
 
-      - name: Plan
+      # - name: Plan
+      #   id: plan
+      #   run: terraform plan -no-color -input=false
+      #   continue-on-error: true
+
+      # Set up and authenticate Pluralith
+      - name: Pluralith Init
+        # uses: Pluralith/actions/init@v1.4.0
+        uses: Just-Insane/pluralith-actions/init@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        with:
+          terraform-path: "${{ env.TF_WORKING_DIR }}"
+          api-key: "${{ secrets.PLURALITH_API_KEY }}"
+          org-id: "${{ vars.PLURALITH_ORG_ID }}"
+          project-id: "${{ vars.PLURALITH_PROJECT_ID }}"
+
+      - name: Pluralith Run Plan
         id: plan
-        run: terraform plan -no-color -input=false
-        continue-on-error: true
+        # uses: Pluralith/actions/run@v1.4.0
+        uses: Just-Insane/pluralith-actions/run@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        with:
+          terraform-command: "plan"
+          terraform-path: "${{ env.TF_WORKING_DIR }}"
+          title: "${{ env.name }}"
+          show-changes: true
+          show-drift: true
+          show-costs: false
+
+      - name: Pluralith Comment
+        id: comment
+        uses: Just-Insane/pluralith-actions/comment@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        with:
+          terraform-path: "${{ env.TF_WORKING_DIR }}"
+          target-type: pull-request
 
       - name: truncate terraform plan result
         run: |
@@ -67,7 +97,7 @@ jobs:
           EOF
           )
           echo "PLAN<<EOF" >> $GITHUB_ENV
-          echo "${plan:0:65536}" | grep >> $GITHUB_ENV
+          echo "${plan:0:65536}" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
       - uses: actions/github-script@v7
@@ -104,12 +134,12 @@ jobs:
             <details><summary>Show Plan</summary>
 
             \`\`\`\n
-            ${process.env.PLAN}
+            ${{ env.PLAN }}
             \`\`\`
 
             </details>
 
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.TF_WORKING_DIR }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
             // 3. If we have a comment, update it, otherwise create a new one
             if (botComment) {
@@ -146,8 +176,6 @@ jobs:
     needs: terraform-plan
     environment:
       name: stg
-    permissions:
-      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -170,9 +198,38 @@ jobs:
         id: validate
         run: terraform validate -no-color
 
-      - name: Terraform Apply
+      # - name: Terraform Apply
+      #   id: apply
+      #   run: terraform apply -no-color -input=false -auto-approve
+
+      # Set up and authenticate Pluralith
+      - name: Pluralith Init
+        # uses: Pluralith/actions/init@v1.4.0
+        uses: Just-Insane/pluralith-actions/init@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        with:
+          terraform-path: "${{ env.TF_WORKING_DIR }}"
+          api-key: "${{ secrets.PLURALITH_API_KEY }}"
+          org-id: "${{ vars.PLURALITH_ORG_ID }}"
+          project-id: "${{ vars.PLURALITH_PROJECT_ID }}"
+
+      - name: Pluralith Run Apply
         id: apply
-        run: terraform apply -no-color -input=false -auto-approve
+        # uses: Pluralith/actions/run@v1.4.0
+        uses: Just-Insane/pluralith-actions/run@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        with:
+          terraform-command: "apply"
+          terraform-path: "${{ env.TF_WORKING_DIR }}"
+          title: "${{ env.name }}"
+          show-changes: true
+          show-drift: true
+          show-costs: false
+
+      - name: Pluralith Comment
+        id: comment
+        uses: Just-Insane/pluralith-actions/comment@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        with:
+          terraform-path: "${{ env.TF_WORKING_DIR }}"
+          target-type: pull-request
 
       - name: truncate terraform apply result
         run: |
@@ -181,13 +238,13 @@ jobs:
           EOF
           )
           echo "APPLY<<EOF" >> $GITHUB_ENV
-          echo "${apply:0:65536}" | grep >> $GITHUB_ENV
+          echo "${apply:0:65536}" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
       - uses: actions/github-script@v7
         if: github.event_name == 'pull_request'
-        env:
-          APPLY: "terraform\n${{ steps.apply.outputs.stdout }}"
+        # env:
+        #   APPLY: "terraform\n${{ steps.apply.outputs.stdout }}"
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
@@ -218,12 +275,12 @@ jobs:
             <details><summary>Show Apply</summary>
 
             \`\`\`\n
-            ${process.env.APPLY}
+            ${{ env.APPLY }}
             \`\`\`
 
             </details>
 
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.TF_WORKING_DIR }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
             // 3. If we have a comment, update it, otherwise create a new one
             if (botComment) {
