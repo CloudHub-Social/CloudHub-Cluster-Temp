@@ -4,8 +4,8 @@ on:
   push:
     branches-ignore:
       - "main"
-    paths:
-      - "terraform/**"
+    # paths:
+    #   - "terraform/**"
 
 env:
   name: dev
@@ -13,7 +13,7 @@ env:
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
   TF_WORKING_DIR: "./terraform"
-  
+
 permissions:
   contents: write
   pull-requests: write
@@ -56,9 +56,40 @@ jobs:
         id: validate
         run: terraform validate -no-color
 
-      - name: Terraform Apply
+      # - name: Terraform Apply
+      #   id: apply
+      #   run: terraform apply -no-color -input=false -auto-approve
+      #   continue-on-error: true
+
+      # Set up and authenticate Pluralith
+      - name: Pluralith Init
+        # uses: Pluralith/actions/init@v1.4.0
+        uses: Just-Insane/pluralith-actions/init@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        with:
+          terraform-path: "${{ env.TF_WORKING_DIR }}"
+          api-key: "${{ secrets.PLURALITH_API_KEY }}"
+          org-id: "${{ vars.PLURALITH_ORG_ID }}"
+          project-id: "${{ vars.PLURALITH_PROJECT_ID }}"
+
+      - name: Pluralith Run Apply
         id: apply
-        run: terraform apply -no-color -input=false -auto-approve
+        # uses: Pluralith/actions/run@v1.4.0
+        uses: Just-Insane/pluralith-actions/init@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        with:
+          terraform-command: "apply"
+          terraform-path: "${{ env.TF_WORKING_DIRECTORY }}"
+          title: "${{ env.name }}"
+          show-changes: true
+          show-drift: true
+          shows-costs: false
+        continue-on-error: true
+
+      - name: Pluralith Comment
+        id: comment
+        uses: Just-Insane/pluralith-actions/init@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        with:
+          terraform-path: "${{ env.TF_WORKING_DIR }}"
+          target-type: commit
         continue-on-error: true
 
       - name: truncate terraform apply result
@@ -96,6 +127,14 @@ jobs:
             ```\n
             ${{ env.APPLY }}
             ```
+
+            </details>
+
+            #### Pluralith Graph
+
+            <details><summary>Show Graph</summary>
+
+            ${{ steps.comment.outputs.body }}
 
             </details>
 
