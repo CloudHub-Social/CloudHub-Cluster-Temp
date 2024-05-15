@@ -14,11 +14,15 @@ env:
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
   TF_WORKING_DIR: "./terraform"
+  
+permissions:
+  contents: write
+  pull-requests: write
 
 defaults:
   run:
     working-directory: ./terraform
-    shell: bash
+    shell: bash 
 
 jobs:
   terraform-plan:
