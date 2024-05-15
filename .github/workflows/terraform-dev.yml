@@ -13,6 +13,8 @@ env:
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
   TF_WORKING_DIR: "./terraform"
+  PLURALITH_ORG_ID: "${{ vars.PLURALITH_ORG_ID }}"
+  PLURALITH_PROJECT_ID: "${{ vars.PLURALITH_PROJECT_ID }}"
 
 permissions:
   contents: write
@@ -74,23 +76,21 @@ jobs:
       - name: Pluralith Run Apply
         id: apply
         # uses: Pluralith/actions/run@v1.4.0
-        uses: Just-Insane/pluralith-actions/init@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        uses: Just-Insane/pluralith-actions/run@e5d17b2206d59f65419079e2c51db6b9096ddcfd
         with:
           terraform-command: "apply"
-          terraform-path: "${{ env.TF_WORKING_DIRECTORY }}"
+          terraform-path: "${{ env.TF_WORKING_DIR }}"
           title: "${{ env.name }}"
           show-changes: true
           show-drift: true
-          shows-costs: false
-        continue-on-error: true
+          show-costs: false
 
       - name: Pluralith Comment
         id: comment
-        uses: Just-Insane/pluralith-actions/init@e5d17b2206d59f65419079e2c51db6b9096ddcfd
+        uses: Just-Insane/pluralith-actions/comment@e5d17b2206d59f65419079e2c51db6b9096ddcfd
         with:
           terraform-path: "${{ env.TF_WORKING_DIR }}"
           target-type: commit
-        continue-on-error: true
 
       - name: truncate terraform apply result
         run: |
