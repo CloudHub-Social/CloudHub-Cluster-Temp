@@ -2,8 +2,6 @@ name: "Terraform Staging"
 
 on:
   pull_request:
-    # types:
-    #   - opened
     branches:
       - "main"
     paths:
