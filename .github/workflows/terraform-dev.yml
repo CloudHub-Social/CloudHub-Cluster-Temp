@@ -93,7 +93,7 @@ jobs:
             <details><summary>Show Apply</summary>
 
             \`\`\`\n
-            ${process.env.APPLY}
+            $APPLY
             \`\`\`
 
             </details>
