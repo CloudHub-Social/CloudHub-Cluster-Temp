@@ -12,6 +12,7 @@ env:
   TF_CLOUD_ORGANIZATION: "${{ vars.TF_CLOUD_ORGANIZATION }}"
   TF_API_TOKEN: "${{ secrets.TF_API_TOKEN }}"
   TF_WORKSPACE: "${{ vars.TF_WORKSPACE }}"
+  TF_WORKING_DIR: "./terraform"
 
 defaults:
   run:
@@ -78,9 +79,9 @@ jobs:
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             <details><summary>Validation Output</summary>
 
-            \`\`\`\n
+            ```\n
             ${{ steps.validate.outputs.stdout }}
-            \`\`\`
+            ```
 
             </details>
 
@@ -88,13 +89,13 @@ jobs:
 
             <details><summary>Show Apply</summary>
 
-            \`\`\`\n
-            ${process.env.APPLY}
-            \`\`\`
+            ```\n
+            ${{ env.APPLY }}
+            ```
 
             </details>
 
-            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.tf_actions_working_dir }}\`, Workflow: \`${{ github.workflow }}\`*`;
+            *Pusher: @${{ github.actor }}, Action: \`${{ github.event_name }}\`, Working Directory: \`${{ env.TF_WORKING_DIR }}\`, Workflow: \`${{ github.workflow }}\`*`;
 
       - name: Check outputs
         run: |
