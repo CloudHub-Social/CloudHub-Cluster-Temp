@@ -93,6 +93,7 @@ jobs:
         with:
           terraform-path: "${{ env.TF_WORKING_DIR }}"
           target-type: pull-request
+        continue-on-error: true
 
       - name: truncate terraform plan result
         run: |
@@ -234,6 +235,7 @@ jobs:
         with:
           terraform-path: "${{ env.TF_WORKING_DIR }}"
           target-type: pull-request
+        continue-on-error: true
 
       - name: truncate terraform apply result
         run: |
