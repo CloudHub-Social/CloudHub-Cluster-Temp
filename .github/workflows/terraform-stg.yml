@@ -21,7 +21,7 @@ permissions:
 defaults:
   run:
     working-directory: ./terraform
-    shell: bash
+    shell: bash 
 
 jobs:
   terraform-plan:
