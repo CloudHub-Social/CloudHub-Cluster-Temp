@@ -6,6 +6,8 @@ on:
     #   - opened
     branches:
       - "main"
+    paths:
+      - "terraform/**"
   workflow_dispatch:
 
 env:
