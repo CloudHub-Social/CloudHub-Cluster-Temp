@@ -2,6 +2,11 @@ name: "Terraform Staging"
 
 on:
   pull_request:
+    types:
+      - opened
+    branches:
+      - "main"
+  workflow_dispatch:
 
 env:
   name: stg
