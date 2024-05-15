@@ -1,12 +1,11 @@
-
 name: "Terraform Development"
 
 on:
   push:
     branches-ignore:
-      - 'main'
+      - "main"
     paths:
-      - 'terraform/**'
+      - "terraform/**"
 
 env:
   name: dev
@@ -27,10 +26,7 @@ jobs:
       run:
         working-directory: ./terraform
         shell: bash
-    permissions:
-      contents: read
-      pull-requests: write
-      
+
     environment: dev
     steps:
       - name: Checkout

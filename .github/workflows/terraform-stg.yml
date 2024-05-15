@@ -5,7 +5,7 @@ on:
     types:
       - opened
     branches:
-      - 'main'
+      - "main"
   workflow_dispatch:
 
 env:
@@ -27,9 +27,6 @@ jobs:
       run:
         working-directory: ./terraform
         shell: bash
-    permissions:
-      contents: read
-      pull-requests: write
 
     environment: stg
     steps:
