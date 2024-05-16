@@ -34,6 +34,7 @@ resource "proxmox_vm_qemu" "talos-control-plane" {
   tags = lower(terraform.workspace)
 
   onboot = true
+
   disk {
     slot    = 0
     size    = module.common.workspace["disk_0_size"]
@@ -94,12 +95,14 @@ resource "proxmox_vm_qemu" "talos-worker" {
   tags = lower(terraform.workspace)
 
   onboot = true
+
   disk {
     slot    = 0
     size    = module.common.workspace["disk_0_size"]
     type    = "scsi"
     storage = "local-lvm"
     discard = "on"
+    ssd     = 1
   }
 
   disk {
