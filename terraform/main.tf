@@ -1,4 +1,5 @@
 terraform {
+  required_version = ">= 1.0"
   cloud {
     organization = "jaxcb7e5133"
     workspaces {
