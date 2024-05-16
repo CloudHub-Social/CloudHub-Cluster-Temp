@@ -72,12 +72,6 @@ resource "tls_private_key" "flux" {
   ecdsa_curve = "P256"
 }
 
-resource "time_sleep" "wait_for_kubernetes_up" {
-  create_duration = "300s"
-
-  depends_on = [module.k8s]
-}
-
 module "flux" {
   source = "./modules/flux"
   depends_on = [
