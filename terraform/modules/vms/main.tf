@@ -34,14 +34,15 @@ resource "proxmox_vm_qemu" "talos-control-plane" {
   tags = lower(terraform.workspace)
 
   onboot = true
+
   disk {
-    slot = 0
-    # set disk size here. leave it small for testing because expanding the disk takes time.
+    slot    = 0
     size    = module.common.workspace["disk_0_size"]
     type    = "scsi"
     storage = "local-lvm"
     discard = "on"
     ssd     = 1
+    backup  = true
   }
 
   disk {
@@ -51,6 +52,7 @@ resource "proxmox_vm_qemu" "talos-control-plane" {
     storage = "local-lvm"
     discard = "on"
     ssd     = 1
+    backup  = true
   }
 
   # if you want two NICs, just copy this whole network section and duplicate it
@@ -95,13 +97,15 @@ resource "proxmox_vm_qemu" "talos-worker" {
   tags = lower(terraform.workspace)
 
   onboot = true
+
   disk {
-    slot = 0
-    # set disk size here. leave it small for testing because expanding the disk takes time.
+    slot    = 0
     size    = module.common.workspace["disk_0_size"]
     type    = "scsi"
     storage = "local-lvm"
     discard = "on"
+    ssd     = 1
+    backup  = true
   }
 
   disk {
@@ -111,6 +115,7 @@ resource "proxmox_vm_qemu" "talos-worker" {
     storage = "local-lvm"
     discard = "on"
     ssd     = 1
+    backup  = true
   }
 
   # if you want two NICs, just copy this whole network section and duplicate it
