@@ -35,7 +35,7 @@ resource "proxmox_vm_qemu" "talos-control-plane" {
 
   onboot = true
   disk {
-    # set disk size here. leave it small for testing because expanding the disk takes time.
+    slot    = 0
     size    = module.common.workspace["disk_0_size"]
     type    = "scsi"
     storage = "local-lvm"
@@ -44,6 +44,7 @@ resource "proxmox_vm_qemu" "talos-control-plane" {
   }
 
   disk {
+    slot    = 1
     size    = module.common.workspace["disk_1_size"]
     type    = "scsi"
     storage = "local-lvm"
@@ -94,7 +95,7 @@ resource "proxmox_vm_qemu" "talos-worker" {
 
   onboot = true
   disk {
-    # set disk size here. leave it small for testing because expanding the disk takes time.
+    slot    = 0
     size    = module.common.workspace["disk_0_size"]
     type    = "scsi"
     storage = "local-lvm"
@@ -102,6 +103,7 @@ resource "proxmox_vm_qemu" "talos-worker" {
   }
 
   disk {
+    slot    = 1
     size    = module.common.workspace["disk_1_size"]
     type    = "scsi"
     storage = "local-lvm"
