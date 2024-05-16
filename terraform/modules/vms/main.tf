@@ -42,6 +42,7 @@ resource "proxmox_vm_qemu" "talos-control-plane" {
     storage = "local-lvm"
     discard = "on"
     ssd     = 1
+    backup  = true
   }
 
   disk {
@@ -51,6 +52,7 @@ resource "proxmox_vm_qemu" "talos-control-plane" {
     storage = "local-lvm"
     discard = "on"
     ssd     = 1
+    backup  = true
   }
 
   # if you want two NICs, just copy this whole network section and duplicate it
@@ -103,6 +105,7 @@ resource "proxmox_vm_qemu" "talos-worker" {
     storage = "local-lvm"
     discard = "on"
     ssd     = 1
+    backup  = true
   }
 
   disk {
@@ -112,6 +115,7 @@ resource "proxmox_vm_qemu" "talos-worker" {
     storage = "local-lvm"
     discard = "on"
     ssd     = 1
+    backup  = true
   }
 
   # if you want two NICs, just copy this whole network section and duplicate it
