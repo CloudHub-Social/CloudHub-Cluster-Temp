@@ -15,12 +15,12 @@ variable "repository_name" {
 }
 
 variable "flux_bootstrap_path" {
-  type = string
+  type        = string
   description = "The location in the git directory to store Flux bootstrap data."
 }
 
 variable "sops_age_agekey" {
-  type = string
+  type        = string
   description = "The secret agekey for the environment"
   sensitive   = true
 }
@@ -34,22 +34,22 @@ variable "pm_user" {
 }
 
 variable "pm_password" {
-  type = string
+  type      = string
   sensitive = true
 }
 
 variable "pm_api_url" {
-  type = string
+  type      = string
   sensitive = true
 }
 
 variable "doppler_gbl_token" {
-  type = string
+  type      = string
   sensitive = true
 }
 
 variable "doppler_env_token" {
-  type = string
+  type      = string
   sensitive = true
 }
 
@@ -60,6 +60,6 @@ variable "cf_email" {
 }
 
 variable "cf_apikey" {
-  type = string
+  type      = string
   sensitive = true
 }
