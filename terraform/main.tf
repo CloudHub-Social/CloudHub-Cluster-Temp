@@ -7,9 +7,9 @@ terraform {
   }
 }
 
-data "doppler_secrets" "gbl" {
-  provider = doppler.gbl
-}
+# data "doppler_secrets" "gbl" {
+#   provider = doppler.gbl
+# }
 
 data "doppler_secrets" "env" {
   provider = doppler.env
@@ -52,9 +52,6 @@ output "vip_ip" {
 locals {
   kubeconfig  = module.k8s.kubeconfig
   talosconfig = module.k8s.talosconfig
-  depends_on = [
-    module.k8s
-  ]
 }
 
 output "kubeconfig" {
