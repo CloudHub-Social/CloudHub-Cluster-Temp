@@ -40,12 +40,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache plugin dir
-        uses: actions/cache@v4
-        with:
-          path: ~/.tflind.d/plugins
-          key: ${{ matrix.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
-
       - uses: terraform-linters/setup-tflint@v4
         name: Setup TFLint
         with:
@@ -176,12 +170,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache plugin dir
-        uses: actions/cache@v4
-        with:
-          path: ~/.tflind.d/plugins
-          key: ${{ matrix.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
-
       - uses: terraform-linters/setup-tflint@v4
         name: Setup TFLint
         with:
@@ -310,12 +298,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Cache plugin dir
-        uses: actions/cache@v4
-        with:
-          path: ~/.tflind.d/plugins
-          key: ${{ matrix.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
 
       - uses: terraform-linters/setup-tflint@v4
         name: Setup TFLint
@@ -463,12 +445,6 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Cache plugin dir
-        uses: actions/cache@v4
-        with:
-          path: ~/.tflind.d/plugins
-          key: ${{ matrix.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
-
       - uses: terraform-linters/setup-tflint@v4
         name: Setup TFLint
         with:
@@ -613,12 +589,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Cache plugin dir
-        uses: actions/cache@v4
-        with:
-          path: ~/.tflind.d/plugins
-          key: ${{ matrix.os }}-tflint-${{ hashFiles('.tflint.hcl') }}
 
       - uses: terraform-linters/setup-tflint@v4
         name: Setup TFLint
