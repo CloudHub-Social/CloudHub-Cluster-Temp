@@ -76,8 +76,7 @@ module "flux" {
     module.vms,
     module.k8s,
     local.kubeconfig,
-    local.talosconfig,
-    time_sleep.wait_for_kubernetes_up
+    local.talosconfig
   ]
   providers = {
     kubernetes = kubernetes,
