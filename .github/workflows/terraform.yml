@@ -1,10 +1,11 @@
+---
 name: "Terraform CI Pipeline"
 
 on:
   push:
     paths:
       - "terraform/**"
-    branches-ignore: [Main]
+    branches-ignore: [main]
   pull_request:
     types: [opened, reopened, closed]
     branches:
@@ -133,7 +134,7 @@ jobs:
             #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            
+
             <details><summary>Validation Output</summary>
 
             ```\n
@@ -270,7 +271,7 @@ jobs:
             #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
-            
+
             <details><summary>Validation Output</summary>
 
             ```\n
@@ -310,7 +311,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: stg
     if: >-
-      github.event_name == 'pull_request' && 
+      github.event_name == 'pull_request' &&
       github.event.action == 'opened' ||
       github.event.action == 'reopened'
     steps:

@@ -10,7 +10,9 @@ module "common" {
   source = "../common"
 }
 
-variable "pm_host" {}
+variable "pm_host" {
+  type = string
+}
 
 # resource is formatted to be "[type]" "[entity_name]" so in this case
 # we are looking to create a proxmox_vm_qemu entity named test_server
