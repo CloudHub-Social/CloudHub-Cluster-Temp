@@ -7,11 +7,11 @@ metadata:
 apiVersion: v1
 kind: Secret
 metadata:
-    name: external-dns-secret
-    namespace: external-dns
+  name: external-dns-secret
+  namespace: external-dns
 stringData:
-    email: "${SECRET_CLOUDFLARE_EMAIL}"
-    api-key: "${SECRET_CLOUDFLARE_KEY}"
+  email: "${SECRET_CLOUDFLARE_EMAIL}"
+  api-key: "${SECRET_CLOUDFLARE_KEY}"
 ---
 apiVersion: helm.toolkit.fluxcd.io/v2
 kind: HelmRelease
