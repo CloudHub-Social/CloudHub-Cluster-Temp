@@ -78,7 +78,7 @@ jobs:
 
       - name: tfsec
         id: security
-        uses: aquasecurity/tfsec-action@v1.0.0
+        uses: aquasecurity/tfsec-action@v1.0.3
         with:
           working_directory: "${{ env.TF_WORKING_DIR }}"
 
@@ -215,7 +215,7 @@ jobs:
 
       - name: tfsec
         id: security
-        uses: aquasecurity/tfsec-action@v1.0.0
+        uses: aquasecurity/tfsec-action@v1.0.3
         with:
           working_directory: "${{ env.TF_WORKING_DIR }}"
 
@@ -354,7 +354,7 @@ jobs:
 
       - name: tfsec
         id: security
-        uses: aquasecurity/tfsec-action@v1.0.0
+        uses: aquasecurity/tfsec-action@v1.0.3
         with:
           working_directory: "${{ env.TF_WORKING_DIR }}"
 
@@ -505,7 +505,7 @@ jobs:
 
       - name: tfsec
         id: security
-        uses: aquasecurity/tfsec-action@v1.0.0
+        uses: aquasecurity/tfsec-action@v1.0.3
         with:
           working_directory: "${{ env.TF_WORKING_DIR }}"
 
@@ -655,7 +655,7 @@ jobs:
 
       - name: tfsec
         id: security
-        uses: aquasecurity/tfsec-action@v1.0.0
+        uses: aquasecurity/tfsec-action@v1.0.3
         with:
           working_directory: "${{ env.TF_WORKING_DIR }}"
 
