@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - "terraform/**"
+    branches-ignore: [Main]
   pull_request:
     types: [opened, reopened, closed]
     branches:
