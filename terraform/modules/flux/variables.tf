@@ -16,9 +16,9 @@ variable "repository_name" {
 }
 
 variable "tls_private_key" {
-  type = map
+  type = map(any)
 }
 
 variable "doppler-env" {
-  type = map
+  type = any
 }
