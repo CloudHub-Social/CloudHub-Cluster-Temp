@@ -1,4 +1,5 @@
 terraform {
+  required_version = ">= 1.0"
   cloud {
     organization = "jaxcb7e5133"
     workspaces {
@@ -7,9 +8,9 @@ terraform {
   }
 }
 
-data "doppler_secrets" "gbl" {
-  provider = doppler.gbl
-}
+# data "doppler_secrets" "gbl" {
+#   provider = doppler.gbl
+# }
 
 data "doppler_secrets" "env" {
   provider = doppler.env
@@ -52,9 +53,6 @@ output "vip_ip" {
 locals {
   kubeconfig  = module.k8s.kubeconfig
   talosconfig = module.k8s.talosconfig
-  depends_on = [
-    module.k8s
-  ]
 }
 
 output "kubeconfig" {
@@ -72,20 +70,13 @@ resource "tls_private_key" "flux" {
   ecdsa_curve = "P256"
 }
 
-resource "time_sleep" "wait_for_kubernetes_up" {
-  create_duration = "300s"
-
-  depends_on = [module.k8s]
-}
-
 module "flux" {
   source = "./modules/flux"
   depends_on = [
     module.vms,
     module.k8s,
     local.kubeconfig,
-    local.talosconfig,
-    time_sleep.wait_for_kubernetes_up
+    local.talosconfig
   ]
   providers = {
     kubernetes = kubernetes,
