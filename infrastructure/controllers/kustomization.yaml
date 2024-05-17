@@ -4,4 +4,10 @@ kind: Kustomization
 metadata:
   name: infra-controllers
 resources:
+  - cert-manager.yaml
+  - external-dns.yaml
   - external-secrets.yaml
+  - k8s-gateway.yaml
+  - metallb.yaml
+  - nginx-ingress.yaml
+  - rook-ceph.yaml

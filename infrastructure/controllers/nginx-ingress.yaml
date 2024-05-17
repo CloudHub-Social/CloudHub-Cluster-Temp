@@ -1,0 +1,90 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nginx-ingress
+---
+apiVersion: source.toolkit.fluxcd.io/v1
+kind: HelmRepository
+metadata:
+  name: ingress-nginx
+  namespace: flux-system
+spec:
+  interval: 1h
+  url: https://kubernetes.github.io/ingress-nginx
+---
+apiVersion: helm.toolkit.fluxcd.io/v2
+kind: HelmRelease
+metadata:
+  name: nginx-ingress
+  namespace: nginx-ingress
+spec:
+  interval: 15m
+  chart:
+    spec:
+      chart: ingress-nginx
+      version: 4.10.1
+      sourceRef:
+        kind: HelmRepository
+        name: ingress-nginx
+        namespace: flux-system
+  maxHistory: 2
+  install:
+    createNamespace: true
+    remediation:
+      retries: 10
+  upgrade:
+    cleanupOnFail: true
+    remediation:
+      retries: 10
+  uninstall:
+    keepHistory: false
+  values:
+    controller:
+      allowSnippetAnnotations: true
+      extraEnvs:
+        - name: TZ
+          value: "${TIMEZONE}"
+      service:
+        annotations:
+          external-dns.alpha.kubernetes.io/hostname: "ingress.${SECRET_DOMAIN}"
+        loadBalancerIP: "${METALLB_INGRESS_ADDR}"
+        externalTrafficPolicy: Local
+      publishService:
+        enabled: true
+      ingressClassResource:
+        default: true
+      config:
+        client-header-timeout: 120
+        client-body-buffer-size: "100M"
+        client-body-timeout: 120
+        custom-http-errors: 400,401,403,404,500,502,503,504
+        enable-brotli: "true"
+        hsts-max-age: "31449600"
+        keep-alive: 120
+        keep-alive-requests: 10000
+        proxy-body-size: "100M"
+        ssl-protocols: "TLSv1.3 TLSv1.2"
+      metrics:
+        enabled: true
+        serviceMonitor:
+          enabled: true
+          namespace: networking
+          namespaceSelector:
+            any: true
+      extraArgs:
+        default-ssl-certificate: "nginx-ingress/${SECRET_DOMAIN/./-}-production-tls"
+      resources:
+        requests:
+          cpu: 10m
+          memory: 250Mi
+        limits:
+          memory: 500Mi
+    defaultBackend:
+      enabled: true
+      image:
+        repository: ghcr.io/tarampampam/error-pages
+        tag: 2.27.0
+      extraEnvs:
+        - { name: TEMPLATE_NAME, value: lost-in-space }
+        - { name: SHOW_DETAILS, value: "false" }
