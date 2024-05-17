@@ -1,3 +1,4 @@
+---
 name: "Terraform CI Pipeline"
 
 on:
@@ -310,7 +311,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: stg
     if: >-
-      github.event_name == 'pull_request' && 
+      github.event_name == 'pull_request' &&
       github.event.action == 'opened' ||
       github.event.action == 'reopened'
     steps:
