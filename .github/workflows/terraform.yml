@@ -5,7 +5,7 @@ on:
     paths:
       - "terraform/**"
   pull_request:
-    types: [opened, reopened]
+    types: [opened, reopened, closed]
     branches:
       - "main"
     paths:
@@ -54,6 +54,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run TFLint
+        id: lint
         run: tflint -f compact
 
       - name: Setup Terraform
@@ -72,9 +73,11 @@ jobs:
         run: terraform init -upgrade
 
       - name: Terraform Validate
+        id: validate
         run: terraform validate -no-color
 
       - name: tfsec
+        id: security
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           working_directory: "${{ env.TF_WORKING_DIR }}"
@@ -125,9 +128,11 @@ jobs:
         #   APPLY: "terraform\n${{ steps.apply.outputs.stdout }}"
         with:
           body: |
+            #### TLint Format and Style 🖌\`${{ steps.lint.outcome }}\`
             #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            
             <details><summary>Validation Output</summary>
 
             ```\n
@@ -136,12 +141,14 @@ jobs:
 
             </details>
 
-            #### Terraform Apply 📖\`${{ steps.apply.outcome }}\`
+            #### TFSec Security 🤖\`${{ steps.security.outcome }}\`
+
+            #### Terraform Apply 📖\`${{ steps.plan.outcome }}\`
 
             <details><summary>Show Apply</summary>
 
             ```\n
-            ${{ env.PLAN }}
+            $PLAN
             ```
 
             </details>
@@ -184,6 +191,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run TFLint
+        id: lint
         run: tflint -f compact
 
       - name: Setup Terraform
@@ -202,9 +210,11 @@ jobs:
         run: terraform init -upgrade
 
       - name: Terraform Validate
+        id: validate
         run: terraform validate -no-color
 
       - name: tfsec
+        id: security
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           working_directory: "${{ env.TF_WORKING_DIR }}"
@@ -255,9 +265,11 @@ jobs:
         #   APPLY: "terraform\n${{ steps.apply.outputs.stdout }}"
         with:
           body: |
+            #### TLint Format and Style 🖌\`${{ steps.lint.outcome }}\`
             #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
+            
             <details><summary>Validation Output</summary>
 
             ```\n
@@ -266,12 +278,14 @@ jobs:
 
             </details>
 
+            #### TFSec Security 🤖\`${{ steps.security.outcome }}\`
+
             #### Terraform Apply 📖\`${{ steps.apply.outcome }}\`
 
             <details><summary>Show Apply</summary>
 
             ```\n
-            ${{ env.APPLY }}
+            $APPLY
             ```
 
             </details>
@@ -294,7 +308,10 @@ jobs:
     name: "Terraform Plan (Staging)"
     runs-on: ubuntu-latest
     environment: stg
-    if: github.event_name == 'pull_request'
+    if: >-
+      github.event_name == 'pull_request' && 
+      github.event.action == 'opened' ||
+      github.event.action == 'reopened'
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -313,6 +330,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run TFLint
+        id: lint
         run: tflint -f compact
 
       - name: Setup Terraform
@@ -331,9 +349,11 @@ jobs:
         run: terraform init -upgrade
 
       - name: Terraform Validate
+        id: validate
         run: terraform validate -no-color
 
       - name: tfsec
+        id: security
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           working_directory: "${{ env.TF_WORKING_DIR }}"
@@ -378,7 +398,7 @@ jobs:
           echo "EOF" >> $GITHUB_ENV
 
       - uses: actions/github-script@v7
-        if: github.event_name == 'pull_request'
+        if: github.event.pull_request.merged == true
         # env:
         #   APPLY: "terraform\n${{ steps.apply.outputs.stdout }}"
         with:
@@ -395,7 +415,8 @@ jobs:
             })
 
             // 2. Prepare format of the comment
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            const output = `#### TLint Format and Style 🖌\`${{ steps.lint.outcome }}\`
+            #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             <details><summary>Validation Output</summary>
@@ -406,12 +427,14 @@ jobs:
 
             </details>
 
+            #### TFSec Security 🤖\`${{ steps.security.outcome }}\`
+
             #### Terraform Apply 📖\`${{ steps.plan.outcome }}\`
 
             <details><summary>Show Apply</summary>
 
             \`\`\`\n
-            ${{ env.PLAN }}
+            $PLAN
             \`\`\`
 
             </details>
@@ -459,6 +482,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run TFLint
+        id: lint
         run: tflint -f compact
 
       - name: Setup Terraform
@@ -480,6 +504,7 @@ jobs:
         run: terraform validate -no-color
 
       - name: tfsec
+        id: security
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           working_directory: "${{ env.TF_WORKING_DIR }}"
@@ -541,7 +566,8 @@ jobs:
             })
 
             // 2. Prepare format of the comment
-            const output = `#### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
+            const output = `#### TLint Format and Style 🖌\`${{ steps.lint.outcome }}\`
+            #### Terraform Format and Style 🖌\`${{ steps.fmt.outcome }}\`
             #### Terraform Initialization ⚙️\`${{ steps.init.outcome }}\`
             #### Terraform Validation 🤖\`${{ steps.validate.outcome }}\`
             <details><summary>Validation Output</summary>
@@ -552,12 +578,14 @@ jobs:
 
             </details>
 
+            #### TFSec Security 🤖\`${{ steps.security.outcome }}\`
+
             #### Terraform Apply 📖\`${{ steps.plan.outcome }}\`
 
             <details><summary>Show Apply</summary>
 
             \`\`\`\n
-            ${{ env.APPLY }}
+            $APPLY
             \`\`\`
 
             </details>
@@ -604,6 +632,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
 
       - name: Run TFLint
+        id: lint
         run: tflint -f compact
 
       - name: Setup Terraform
@@ -625,6 +654,7 @@ jobs:
         run: terraform validate -no-color
 
       - name: tfsec
+        id: security
         uses: aquasecurity/tfsec-action@v1.0.0
         with:
           working_directory: "${{ env.TF_WORKING_DIR }}"
