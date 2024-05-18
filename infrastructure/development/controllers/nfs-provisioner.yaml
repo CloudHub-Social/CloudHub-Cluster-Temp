@@ -1,0 +1,38 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - ./namespace.yaml
+patchesStrategicMerge:
+  - ./nfs-provisioner/patch_nfs_details.yaml
+bases:
+  - github.com/kubernetes-sigs/nfs-subdir-external-provisioner/deploy
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: nfs-provisioner
+  labels:
+    kustomize.toolkit.fluxcd.io/prune: disabled
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: nfs-client-provisioner
+  name: nfs-client-provisioner
+spec:
+  template:
+    spec:
+      containers:
+        - name: nfs-client-provisioner
+          env:
+            - name: NFS_SERVER
+              value: 10.0.20.50
+            - name: NFS_PATH
+              value: /mnt/Storage/CloudHub-NFS/Temp
+      volumes:
+        - name: nfs-client-root
+          nfs:
+            server: 10.0.20.50
+            path: /mnt/Storage/CloudHub-NFS/Temp
