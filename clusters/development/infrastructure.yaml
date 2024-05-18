@@ -14,6 +14,17 @@
 #   path: ./infrastructure/base/controllers
 #   prune: true
 #   wait: true
+#   decryption:
+#     provider: sops
+#     secretRef:
+#        name: sops-age
+#   postBuild:
+#     substituteFrom:
+#       - kind: ConfigMap
+#         name: cluster-settings
+#         optional: true
+#       - kind: Secret
+#         name: cluster-secrets
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -30,6 +41,17 @@ spec:
   path: ./infrastructure/development/controllers
   prune: true
   wait: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: true
+      - kind: Secret
+        name: cluster-secrets
 # ---
 # apiVersion: kustomize.toolkit.fluxcd.io/v1
 # kind: Kustomization
@@ -47,6 +69,17 @@ spec:
 #     name: flux-system
 #   path: ./infrastructure/base/configs
 #   prune: true
+#   decryption:
+#     provider: sops
+#     secretRef:
+#       name: sops-age
+#   postBuild:
+#     substituteFrom:
+#       - kind: ConfigMap
+#         name: cluster-settings
+#         optional: true
+#       - kind: Secret
+#         name: cluster-secrets
 ---
 apiVersion: kustomize.toolkit.fluxcd.io/v1
 kind: Kustomization
@@ -64,3 +97,14 @@ spec:
     name: flux-system
   path: ./infrastructure/development/configs
   prune: true
+  decryption:
+    provider: sops
+    secretRef:
+      name: sops-age
+  postBuild:
+    substituteFrom:
+      - kind: ConfigMap
+        name: cluster-settings
+        optional: true
+      - kind: Secret
+        name: cluster-secrets
