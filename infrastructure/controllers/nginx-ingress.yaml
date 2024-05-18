@@ -69,7 +69,7 @@ spec:
         enabled: true
         serviceMonitor:
           enabled: true
-          namespace: networking
+          namespace: nginx-ingress
           namespaceSelector:
             any: true
       extraArgs:
