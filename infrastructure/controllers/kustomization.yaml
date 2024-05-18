@@ -8,6 +8,7 @@ resources:
   - external-dns.yaml
   - external-secrets.yaml
   - k8s-gateway.yaml
+  - kube-prometheus-stack.yaml
   - metallb.yaml
   - namespaces.yaml
   - nginx-ingress.yaml
