@@ -3,7 +3,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: "${SECRET_DOMAIN/./-}-production"
-  namespace: nginx-ingress
+  namespace: networking
 spec:
   secretName: "${SECRET_DOMAIN/./-}-production-tls"
   issuerRef:
@@ -18,7 +18,7 @@ apiVersion: cert-manager.io/v1
 kind: Certificate
 metadata:
   name: "${SECRET_DOMAIN/./-}-staging"
-  namespace: nginx-ingress
+  namespace: networking
 spec:
   secretName: "${SECRET_DOMAIN/./-}-staging-tls"
   issuerRef:
