@@ -11,5 +11,6 @@ resources:
   - kube-prometheus-stack.yaml
   - metallb.yaml
   - namespaces.yaml
+  - nfs-provisioner.yaml
   - nginx-ingress.yaml
   - rook-ceph.yaml

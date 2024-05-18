@@ -4,6 +4,5 @@ kind: Kustomization
 resources:
   - cluster-issuers.yaml
   - cluster-secret-store.yaml
-  - metallb.yaml
   - nginx-certificates.yaml
   - rook-ceph-cluster.yaml
