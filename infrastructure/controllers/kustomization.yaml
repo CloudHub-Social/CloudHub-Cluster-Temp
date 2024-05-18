@@ -9,5 +9,6 @@ resources:
   - external-secrets.yaml
   - k8s-gateway.yaml
   - metallb.yaml
+  - namespaces.yaml
   - nginx-ingress.yaml
   - rook-ceph.yaml
