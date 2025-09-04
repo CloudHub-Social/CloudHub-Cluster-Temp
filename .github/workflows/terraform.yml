@@ -404,7 +404,7 @@ jobs:
           echo "${plan:0:65536}" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         if: github.event.pull_request.merged == true
         # env:
         #   APPLY: "terraform\n${{ steps.apply.outputs.stdout }}"
@@ -555,7 +555,7 @@ jobs:
           echo "${apply:0:65536}" >> $GITHUB_ENV
           echo "EOF" >> $GITHUB_ENV
 
-      - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7
+      - uses: actions/github-script@ed597411d8f924073f98dfc5c65a23a2325f34cd # v8
         if: github.event_name == 'pull_request'
         # env:
         #   APPLY: "terraform\n${{ steps.apply.outputs.stdout }}"
