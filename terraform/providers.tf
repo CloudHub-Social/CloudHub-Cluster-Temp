@@ -26,7 +26,7 @@ terraform {
     }
     doppler = {
       source  = "DopplerHQ/doppler"
-      version = "1.7.1"
+      version = "1.8.0"
     }
     proxmox = {
       source  = "telmate/proxmox"
